@@ -1,0 +1,60 @@
+---
+- name: test
+  hosts: localhost
+  tasks:
+  - name: Get Apache Directory Studio version page content
+    become: false
+    uri:
+      url: http://apache.mirror.amaze.com.au/directory/studio/
+      return_content: yes
+    register: studio_version_page
+    changed_when: false
+
+  - name: Set version fact
+    set_fact:
+      studio_version: "{{ studio_version_page.content | regex_findall('folder\\.gif.*') | first | regex_findall('(?<=href=\")(.*?)(?=/\"\\>)') | first }}"
+    changed_when: false
+
+  - name: Set tarball name fact
+    set_fact:
+      studio_tarball: "ApacheDirectoryStudio-{{ studio_version }}-linux.gtk.x86_64.tar.gz"
+    changed_when: false
+
+  - name: Set download url fact
+    set_fact:
+      studio_download_url: "http://apache.mirror.amaze.com.au/directory/studio/{{ studio_version }}/{{ studio_tarball }}"
+    changed_when: false
+
+  - name: Check if Apache Directory Studio is installed
+    become: true
+    stat:
+      path: /opt/apache/directory-studio
+    register: old_studio_result
+
+  - name: Set Apache Directory Studio Installed Fact
+    become: false
+    set_fact:
+      studio_installed: "{{ old_studio_result.stat.exists }}"
+
+  - name: Get current Apache Directory Studio version
+    become: true
+    find:
+      recurse: false
+      file_type: "directory"
+      paths: /opt/apache/directory-studio
+    register: studio_files
+    when: studio_installed == True
+
+  - name: Set installed Apache Directory Studio version
+    become: false
+    set_fact:
+      studio_installed_version: "{{ studio_files.files | first | json_query('path') | basename }}"
+    when: studio_installed == True
+    changed_when: false
+
+  - name: Set installed Apache Directory Studio version to not_installed
+    become: false
+    set_fact:
+      studio_installed_version: not_installed
+    when: studio_installed == False
+

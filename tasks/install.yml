@@ -1,0 +1,40 @@
+---
+- name: Create Direcotries
+  become: true
+  file:
+    path: "/opt/apache/directory-studio/{{ studio_version }}"
+    state: directory
+    recurse: yes
+    mode: 0755
+  when: studio_installed_version != studio_version
+
+- name: Install Apache Directory Studio {{ studio_version }}
+  become: true
+  unarchive:
+    src: "{{ studio_download_url }}"
+    dest: "/opt/apache/directory-studio/{{ studio_version }}"
+    extra_opts:
+      - --strip-components=1
+    remote_src: yes
+  when: studio_installed_version != studio_version
+
+- name: Create gnome desktop entry
+  become: false
+  vars:
+    studio_installation_directory: "/opt/apache/directory-studio/{{ studio_version }}"
+    studio_only_show_option: true
+  template:
+    src: apache-directory-studio.j2
+    dest: "{{ local_user_homedir }}/.gnome/apps/apache-directory-studio.desktop"
+    mode: 0644
+
+- name: Create local desktop entry
+  become: false
+  vars:
+    studio_installation_directory: "/opt/apache/directory-studio/{{ studio_version }}"
+    studio_only_show_option: false
+  template:
+    src: apache-directory-studio.j2
+    dest: "{{ local_user_homedir }}/.local/share/applications/apache-directory-studio.desktop"
+    mode: 0644
+

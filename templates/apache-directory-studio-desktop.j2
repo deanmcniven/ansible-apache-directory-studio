@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Apache Directory Studio
+Icon={{ studio_installation_directory }}/icon.xpm
+Exec="{{ studio_installation_directory }}/ApacheDirectoryStudio"
+Comment=
+Categories=System;
+Terminal=false
+StartupWMClass=apache-directory-studio
+{% if studio_only_show_option %}OnlyShowIn=Old;{% endif %}

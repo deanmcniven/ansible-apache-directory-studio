@@ -1,0 +1,8 @@
+---
+- name: Remove old Apache Studio Installation
+  become: true
+  file:
+    path: "/opt/apache/directory-studio/{{ studio_installed_version }}"
+    state: absent
+  when: (studio_installed == True) and (studio_installed_version != studio_version)
+
