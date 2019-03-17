@@ -24,7 +24,7 @@
     studio_installation_directory: "/opt/apache/directory-studio/{{ studio_version }}"
     studio_only_show_option: true
   template:
-    src: apache-directory-studio.j2
+    src: apache-directory-studio-desktop.j2
     dest: "{{ local_user_homedir }}/.gnome/apps/apache-directory-studio.desktop"
     mode: 0644
 
@@ -34,7 +34,7 @@
     studio_installation_directory: "/opt/apache/directory-studio/{{ studio_version }}"
     studio_only_show_option: false
   template:
-    src: apache-directory-studio.j2
+    src: apache-directory-studio-desktop.j2
     dest: "{{ local_user_homedir }}/.local/share/applications/apache-directory-studio.desktop"
     mode: 0644
 
