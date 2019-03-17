@@ -1,5 +1,5 @@
 ---
-- name: Create Direcotries
+- name: Create Directories
   become: true
   file:
     path: "/opt/apache/directory-studio/{{ studio_version }}"
